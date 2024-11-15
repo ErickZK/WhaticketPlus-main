@@ -50,11 +50,11 @@ sudo su - deploywhaticketplus << EOF
 NODE_ENV=
 
 # VARIÁVEIS DE SISTEMA
-BACKEND_URL=${backend_url}
-ALLOWED_ORIGINS=${frontend_url}
-FRONTEND_URL=${frontend_url}
-PROXY_PORT=443
-PORT=8080
+BACKEND_URL=http://192.168.2.199
+ALLOWED_ORIGINS=https://chat.sbsolucoes.work
+FRONTEND_URL=http://192.168.2.199
+PROXY_PORT=5200
+PORT=5200
 
 # CREDENCIAIS BANCO DE DADOS
 DB_TIMEZONE=-03:00
@@ -211,46 +211,6 @@ backend_start_pm2() {
   sudo su - deploywhaticketplus <<EOF
   cd /home/deploywhaticketplus/whaticket/backend
   pm2 start whaticketplus/server.js --name whaticket-backend
-EOF
-
-  sleep 2
-}
-
-#######################################
-# updates frontend code
-# Arguments:
-#   None
-#######################################
-backend_nginx_setup() {
-  print_banner
-  printf "${WHITE} 💻 Configurando nginx (backend)...${GRAY_LIGHT}"
-  printf "\n\n"
-
-  sleep 2
-
-  backend_hostname=$(echo "${backend_url/https:\/\/}")
-
-sudo su - root << EOF
-
-cat > /etc/nginx/sites-available/whaticket-backend << 'END'
-server {
-  server_name $backend_hostname;
-
-  location / {
-    proxy_pass http://127.0.0.1:8080;
-    proxy_http_version 1.1;
-    proxy_set_header Upgrade \$http_upgrade;
-    proxy_set_header Connection 'upgrade';
-    proxy_set_header Host \$host;
-    proxy_set_header X-Real-IP \$remote_addr;
-    proxy_set_header X-Forwarded-Proto \$scheme;
-    proxy_set_header X-Forwarded-For \$proxy_add_x_forwarded_for;
-    proxy_cache_bypass \$http_upgrade;
-  }
-}
-END
-
-ln -s /etc/nginx/sites-available/whaticket-backend /etc/nginx/sites-enabled
 EOF
 
   sleep 2
