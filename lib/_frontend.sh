@@ -32,14 +32,9 @@ frontend_set_env() {
 
   sleep 2
 
-  # Ensure idempotency
-  backend_url=$(echo "${backend_url/https:\/\/}")
-  backend_url=${backend_url%%/*}
-  backend_url=https://$backend_url
-
   sudo su - deploywhaticketplus << EOF
   cat <<[-]EOF > /home/deploywhaticketplus/whaticket/frontend/.env
-REACT_APP_BACKEND_URL=${backend_url}
+REACT_APP_BACKEND_URL=http://192.168.2.199:5200
 REACT_APP_ENV_TOKEN=210897ugn217204u98u8jfo2983u5
 REACT_APP_HOURS_CLOSE_TICKETS_AUTO=9999999
 REACT_APP_FACEBOOK_APP_ID=1005318707427295
