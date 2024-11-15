@@ -81,44 +81,6 @@ EOF
   sleep 2
 }
 
-#######################################
-# Set up nginx for frontend
-# Arguments: None
-#######################################
-frontend_nginx_setup() {
-  print_banner
-  printf "${WHITE} 💻 Configurando nginx (frontend)...${GRAY_LIGHT}"
-  printf "\n\n"
-
-  sleep 2
-
-  frontend_hostname=$(echo "${frontend_url/https:\/\/}")
-
-  sudo su - root << EOF
-
-  cat > /etc/nginx/sites-available/whaticket-frontend << 'END'
-server {
-  server_name $frontend_hostname;
-
-  location / {
-    proxy_pass http://127.0.0.1:3333;
-    proxy_http_version 1.1;
-    proxy_set_header Upgrade \$http_upgrade;
-    proxy_set_header Connection 'upgrade';
-    proxy_set_header Host \$host;
-    proxy_set_header X-Real-IP \$remote_addr;
-    proxy_set_header X-Forwarded-Proto \$scheme;
-    proxy_set_header X-Forwarded-For \$proxy_add_x_forwarded_for;
-    proxy_cache_bypass \$http_upgrade;
-  }
-}
-END
-
-  ln -s /etc/nginx/sites-available/whaticket-frontend /etc/nginx/sites-enabled
-EOF
-
-  sleep 2
-}
 
 
 system_unzip() {
@@ -181,9 +143,9 @@ frontend_conf1() {
   sudo su - root <<EOF
   cd /home/deploywhaticketplus/whaticket/frontend
 
-  BACKEND_URL=${backend_url}
+  BACKEND_URL=http://192.168.2.199:5200
 
-  sed -i "s|https://autoriza.dominio|\$BACKEND_URL|g" \$(grep -rl 'https://autoriza.dominio' .)
+  sed -i "s|https://chat.sbsolucoes.work|\$BACKEND_URL|g" \$(grep -rl 'https://chat.sbsolucoes.work' .)
 EOF
 
   sleep 2
