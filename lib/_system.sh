@@ -17,7 +17,7 @@ system_create_user() {
   sudo su - root <<EOF
   useradd -m -p $(openssl passwd $deploy_password) -s /bin/bash -G sudo deploywhaticketplus
   usermod -aG sudo deploywhaticketplus
-  mv "${PROJECT_ROOT}"/whaticket.zip /home/deploywhaticketplus/
+  mv "${PROJECT_ROOT}"/whaticketsaasv5-master.zip /home/deploywhaticketplus/
 EOF
 
   sleep 2
@@ -36,7 +36,7 @@ system_unzip_whaticket() {
   sleep 2
 
   sudo su - deploywhaticketplus <<EOF
-  unzip whaticket.zip
+  unzip whaticketsaasv5-master.zip
 EOF
 
   sleep 2
